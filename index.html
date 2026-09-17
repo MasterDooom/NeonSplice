@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEON SPLICE</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="game" class="game-shell" data-phase="menu">
+  <canvas id="scene"></canvas>
+  <div class="vignette"></div><div class="scanlines"></div>
+  <audio id="soundtrack" src="soundtrack.mpeg" preload="auto"></audio>
+
+  <header class="hud">
+    <div class="wordmark"><b class="brand-icon">N</b><div>NEON / <span class="wordmark-light">SPLICE</span><small>CHROMATIC RUNNER</small></div></div>
+    <div class="live-score"><span class="label">SCORE</span><strong id="score">000000</strong></div>
+    <div class="hud-actions">
+      <button id="sound" class="icon-button" aria-label="Enable sound"><span>🔊</span><span class="mute-slash">╱</span></button>
+      <button id="motion" class="text-button">LOW FX</button>
+      <button id="pause" class="text-button">PAUSE</button>
+      <button id="fullscreen" class="icon-button" aria-label="Enter fullscreen">⛶</button>
+    </div>
+  </header>
+
+  <section id="menu" class="screen menu-screen">
+    <div class="edition"><span></span> ENDLESS ARCADE / VOL. 01</div>
+    <h1><span>NEON</span><span>SPLICE</span></h1>
+    <p class="tagline">MATCH THE COLOUR.<br><span>BREAK THE LIMIT.</span></p>
+    <div class="mode-select">
+      <button id="modeNormal" class="mode-card selected">
+        <strong>NORMAL RUN</strong><small>BUILD COMBO → INCREASE SPEED</small>
+      </button>
+      <button id="modeBoss" class="mode-card boss">
+        <strong>⏪ BOSS / PARADOX</strong><small>BOSS FIRST → MAX INTENSITY</small>
+      </button>
+    </div>
+    <div class="menu-controls">
+      <span style="--key:#00e5ef"><kbd>W</kbd> CYAN</span>
+      <span style="--key:#ff3caa"><kbd>A</kbd> PINK</span>
+      <span style="--key:#ffc65b"><kbd>S</kbd> GOLD</span>
+      <span style="--key:#a477ff"><kbd>D</kbd> VIOLET</span>
+    </div>
+    <button id="start" class="primary-button">ENTER THE SPLICE <span>↗</span></button>
+    <p class="start-hint">PRESS ENTER TO RUN <span>·</span> HEADPHONES RECOMMENDED</p>
+    <p class="rules">Match each gate before impact. One mistake ends the run.</p>
+  </section>
+
+  <div id="countdown" class="countdown" hidden></div>
+
+  <aside class="side-meter only-play">
+    <span class="label">VELOCITY</span><div id="velocityBars" class="meter-bars"></div>
+    <strong id="velocity">1.00<span>×</span></strong>
+  </aside>
+
+  <aside class="combo-panel only-play">
+    <span class="label">COMBO</span><strong id="multiplier">×1</strong>
+    <span id="combo">0 STREAK</span><div class="combo-track"><i id="comboFill"></i></div>
+    <small id="nextCombo">5 TO ×2</small>
+  </aside>
+
+  <div id="feedback" class="feedback"><strong>SPLICED</strong><span>+100</span></div>
+  <div id="milestone" class="milestone"><span>×2 MULTIPLIER UNLOCKED</span><strong>OVERDRIVE</strong></div>
+
+  <div id="targetCue" class="target-cue only-play">
+    <span id="targetLabel" class="label">MATCH BEFORE IMPACT</span>
+    <div><kbd id="targetKey">W</kbd><span id="targetColour">CYAN</span></div>
+    <div class="approach-track"><i id="approachFill"></i></div>
+  </div>
+
+  <div class="play-keys">
+    <button data-colour style="--key:#00e5ef"><kbd>W</kbd><span>CYAN</span><i></i></button>
+    <button data-colour style="--key:#ff3caa"><kbd>A</kbd><span>PINK</span><i></i></button>
+    <button data-colour style="--key:#ffc65b"><kbd>S</kbd><span>GOLD</span><i></i></button>
+    <button data-colour style="--key:#a477ff"><kbd>D</kbd><span>VIOLET</span><i></i></button>
+  </div>
+
+  <section id="paused" class="screen pause-screen" hidden>
+    <span class="label">SIGNAL PAUSED</span><h2>HOLD <span>THE GRID</span></h2>
+    <button id="resume" class="primary-button">RESUME <span>↗</span></button>
+    <button id="pauseRestart" class="secondary-button">RESTART RUN</button>
+  </section>
+
+  <section id="results" class="screen results-screen" hidden>
+    <span class="label">CONNECTION LOST / RUN COMPLETE</span>
+    <h2>SIGNAL <span>SHATTERED</span></h2><p id="failureReason"></p>
+    <div class="result-score"><span class="label">FINAL SCORE</span><strong id="finalScore">000000</strong></div>
+    <div class="result-stats">
+      <div><strong id="finalCombo">0</strong><span>BEST STREAK</span></div>
+      <div><strong id="finalPerfect">0</strong><span>PERFECT SPLICES</span></div>
+      <div><strong id="finalTime">0s</strong><span>SURVIVAL</span></div>
+    </div>
+    <button id="retry" class="primary-button">SPLICE AGAIN <span>↗</span></button>
+    <button id="backMenu" class="secondary-button">BACK TO TITLE</button>
+  </section>
+
+  <footer class="control-deck">
+    <div class="deck-caption"><i class="status-light"></i><span id="status">SYSTEM READY</span></div>
+    <div class="deck-right"><span class="label">TIME</span><span id="elapsed">00:00</span></div>
+  </footer>
+  <div id="announcement" class="sr-only" aria-live="polite"></div>
+</main>
+<script src="engine.js"></script>
+<script src="game.js"></script>
+<div style="position:fixed;right:18px;bottom:10px;z-index:20;font:9px/1 monospace;letter-spacing:.28em;color:rgba(120,240,255,.42);pointer-events:none">NEON SPLICE // CHROMATIC RUNNER</div>
+<div id="cinematicOverlay" aria-hidden="true"></div>
+<div id="homeParticles" aria-hidden="true"><i style="left:0%;top:30%;animation-delay:-0.0s;animation-duration:4.0s"></i><i style="left:17%;top:59%;animation-delay:-0.7s;animation-duration:4.6s"></i><i style="left:34%;top:88%;animation-delay:-1.4s;animation-duration:5.2s"></i><i style="left:51%;top:52%;animation-delay:-2.0999999999999996s;animation-duration:5.8s"></i><i style="left:68%;top:81%;animation-delay:-2.8s;animation-duration:6.4s"></i><i style="left:85%;top:45%;animation-delay:-3.5s;animation-duration:4.0s"></i><i style="left:5%;top:74%;animation-delay:-4.199999999999999s;animation-duration:4.6s"></i><i style="left:22%;top:38%;animation-delay:-0.0s;animation-duration:5.2s"></i><i style="left:39%;top:67%;animation-delay:-0.7s;animation-duration:5.8s"></i><i style="left:56%;top:31%;animation-delay:-1.4s;animation-duration:6.4s"></i><i style="left:73%;top:60%;animation-delay:-2.0999999999999996s;animation-duration:4.0s"></i><i style="left:90%;top:89%;animation-delay:-2.8s;animation-duration:4.6s"></i><i style="left:10%;top:53%;animation-delay:-3.5s;animation-duration:5.2s"></i><i style="left:27%;top:82%;animation-delay:-4.199999999999999s;animation-duration:5.8s"></i><i style="left:44%;top:46%;animation-delay:-0.0s;animation-duration:6.4s"></i><i style="left:61%;top:75%;animation-delay:-0.7s;animation-duration:4.0s"></i><i style="left:78%;top:39%;animation-delay:-1.4s;animation-duration:4.6s"></i><i style="left:95%;top:68%;animation-delay:-2.0999999999999996s;animation-duration:5.2s"></i><i style="left:15%;top:32%;animation-delay:-2.8s;animation-duration:5.8s"></i><i style="left:32%;top:61%;animation-delay:-3.5s;animation-duration:6.4s"></i><i style="left:49%;top:90%;animation-delay:-4.199999999999999s;animation-duration:4.0s"></i><i style="left:66%;top:54%;animation-delay:-0.0s;animation-duration:4.6s"></i><i style="left:83%;top:83%;animation-delay:-0.7s;animation-duration:5.2s"></i><i style="left:3%;top:47%;animation-delay:-1.4s;animation-duration:5.8s"></i></div>
+</body>
+</html>
